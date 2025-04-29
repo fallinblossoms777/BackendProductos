@@ -1,5 +1,4 @@
 const express = require('express');
-const cors = require('cors');
 const app = express();
 const sequelize = require("./util/database");
 const producto = require("./models/productoModel");
@@ -17,7 +16,6 @@ const cancelacionRoutes = require('./routes/cancelacionRoutes');
 const pagoRoutes = require('./routes/pagoRoutes');
 
 app.use(express.json());
-app.use(cors());
 
 app.use('/producto', productoRoutes);
 app.use('/cliente', clienteRoutes);
