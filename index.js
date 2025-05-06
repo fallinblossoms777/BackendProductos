@@ -37,6 +37,6 @@ sequelize.sync().then (result => {
 });
 
 app.listen(6500,() => {
-    console.log('Servidor corriendo en el puerto 3600');
+    console.log('Servidor corriendo en el puerto 3306.');
 });
 
