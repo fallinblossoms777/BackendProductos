@@ -1,5 +1,6 @@
 const Cancelacion = require("../models/cancelacionModel"); 
 const Turno = require("../models/turnoModel"); 
+const Pago = require("../models/pagoModel");
 
 const getCancelaciones = async (req, res) => {
     try {
