@@ -16,6 +16,10 @@ const Cancelacion = sequelize.define('Cancelacion', {
     defaultValue: false,  
     allowNull: false,  
   },
+    monto_devolucion: {
+    type: Sequelize.FLOAT,
+    defaultValue: 0           
+  },
   turnoId: {  
     type: Sequelize.INTEGER,
     allowNull: false,
