@@ -30,43 +30,65 @@ const createCancelacion = async (req, res) => {
     const { turnoId, fecha_cancelacion, cancelacion_tormenta } = req.body;
 
     try {
-        
-        const turno = await Turno.findByPk(turnoId);
+        const turno = await Turno.findByPk(turnoId); 
         if (!turno) {
             return res.status(404).json({ error: "Turno no encontrado" });
         }
 
+       
         const fechaTurno = new Date(turno.fecha_turno);
         const fechaCancelacion = new Date(fecha_cancelacion);
+        MILISEGUNDOS = 1000 // 1 SEGUNDO
+        SEGUNDOS = 60 // 1 MINUTO
+        MINUTOS = 60 // 1 HORA
+        MILISEGUNDOS_EN_UNA_HORA = MILISEGUNDOS * SEGUNDOS * MINUTOS
+        const diferenciaHoras = (fechaTurno - fechaCancelacion) / (MILISEGUNDOS_EN_UNA_HORA); 
 
-        const diferenciaHoras = (fechaTurno - fechaCancelacion) / (1000 * 60 * 60); 
-
-        if (diferenciaHoras < 2 && !cancelacion_tormenta) {
-            return res.status(400).json({ 
-                error: "La cancelación debe realizarse al menos 2 horas antes del turno para evitar costos." 
-            });
-        }
         
+        const pago = await Pago.findOne({ where: { turnoId } });
+
+        let montoDevolucion = 0; 
+        if (pago) {
+            if (cancelacion_tormenta) {
+                montoDevolucion = pago.monto * 0.5; 
+            } else if (diferenciaHoras < 2) {
+                montoDevolucion = pago.monto * 0.6; 
+            } else {
+                montoDevolucion = pago.monto; 
+            }
+        }
+
+       
         const nuevaCancelacion = await Cancelacion.create({
             turnoId,
             fecha_cancelacion,
-            cancelacion_tormenta
+            cancelacion_tormenta,
+            monto_devolucion: montoDevolucion
         });
+
         
         if (cancelacion_tormenta) {
-            return res.status(201).json({ 
+            return res.status(201).json({
                 mensaje: "Cancelación por tormenta: se devuelve el 50% del valor abonado.",
-                cancelacion: nuevaCancelacion 
+                cancelacion: nuevaCancelacion
             });
         }
-
-        res.status(201).json(nuevaCancelacion);
+        if (diferenciaHoras < 2) {
+            return res.status(201).json({
+                mensaje: "Cancelación fuera de las 2 horas: solo se devuelve el 60% del monto abonado según política.",
+                cancelacion: nuevaCancelacion
+            });
+        }
+        return res.status(201).json({
+            mensaje: "Cancelación realizada: se devuelve el 100%.",
+            cancelacion: nuevaCancelacion
+        });
 
     } catch (error) {
         console.error("Error al crear la cancelación:", error);
         res.status(500).json({ error: "Error al crear la cancelación" });
     }
-}
+};
 
 const deleteCancelacion = async (req, res) => {
     const id = req.params.id; 
