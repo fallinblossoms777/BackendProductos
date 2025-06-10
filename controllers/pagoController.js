@@ -1,6 +1,7 @@
 const Pago = require("../models/pagoModel");
 const Turno = require("../models/turnoModel");
 const Cliente = require("../models/clienteModel");
+const Alquiler = require("../models/alquilerModel");
 
 const getPagos = async (req, res) => {
     try {
