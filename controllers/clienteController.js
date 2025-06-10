@@ -59,7 +59,6 @@ const deleteCliente = async (req, res) => {
             return res.status(404).json({ error: "Cliente no encontrado" }); 
         }
         await cliente.destroy(); 
-        res.status(204).send(); 
     } catch (error) {
         console.error("Error al eliminar el cliente:", error); 
         res.status(500).json({ error: "Error al eliminar el cliente" }); 
