@@ -23,10 +23,6 @@ const Pago = sequelize.define('Pago', {
     type: Sequelize.ENUM('efectivo', 'tarjeta'),
     allowNull: false
   },
-  seguro_tormenta: {
-    type: Sequelize.BOOLEAN,
-    defaultValue: false
-  },
   monto_devolucion: {
     type: Sequelize.DECIMAL(10, 2),
     defaultValue: 0.00
